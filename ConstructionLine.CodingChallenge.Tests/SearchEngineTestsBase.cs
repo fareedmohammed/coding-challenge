@@ -39,9 +39,10 @@ namespace ConstructionLine.CodingChallenge.Tests
 
                 var expectedSizeCount = shirts
                     .Count(s => s.Size.Id == size.Id
+                                && searchOptions.Sizes.Count > 0 && searchOptions.Sizes.Select(sz => sz.Id).Contains(s.Size.Id)
                                 && (!searchOptions.Colors.Any() || searchOptions.Colors.Select(c => c.Id).Contains(s.Color.Id)));
 
-                Assert.That(sizeCount.Count, Is.EqualTo(expectedSizeCount), 
+                Assert.That(sizeCount.Count, Is.EqualTo(expectedSizeCount),
                     $"Size count for '{sizeCount.Size.Name}' showing '{sizeCount.Count}' should be '{expectedSizeCount}'");
             }
         }
@@ -50,15 +51,17 @@ namespace ConstructionLine.CodingChallenge.Tests
         protected static void AssertColorCounts(List<Shirt> shirts, SearchOptions searchOptions, List<ColorCount> colorCounts)
         {
             Assert.That(colorCounts, Is.Not.Null);
-            
+
             foreach (var color in Color.All)
             {
                 var colorCount = colorCounts.SingleOrDefault(s => s.Color.Id == color.Id);
                 Assert.That(colorCount, Is.Not.Null, $"Color count for '{color.Name}' not found in results");
 
                 var expectedColorCount = shirts
-                    .Count(c => c.Color.Id == color.Id  
+                    .Count(c => c.Color.Id == color.Id
+                                && searchOptions.Colors.Any() && searchOptions.Colors.Select(s => s.Id).Contains(c.Color.Id)
                                 && (!searchOptions.Sizes.Any() || searchOptions.Sizes.Select(s => s.Id).Contains(c.Size.Id)));
+
 
                 Assert.That(colorCount.Count, Is.EqualTo(expectedColorCount),
                     $"Color count for '{colorCount.Color.Name}' showing '{colorCount.Count}' should be '{expectedColorCount}'");
